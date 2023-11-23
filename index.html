@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {background-image: url(bg.png); background-size: cover; background-attachment: fixed; padding-top: 80px;}
+        #display {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #image {width: 500px; height: auto;}
+        #choices {display: flex; justify-content: center; margin-top: 20px;}
+        .choice {margin: 0 10px; cursor: pointer; width: 300px; height: auto;}
+        p {margin: 50px;}
+        .do {font-size: 1.5rem; font-weight: bold;}
+        .rsp {width: 1200px; height: 600px; margin: 0 auto; border: 2px solid black; border-radius: 40px; background-color: white;}
+        #word {font-size: 15pt}
+        #result {}
+
+    </style>
+    <title>가위바위보 게임</title>
+</head>
+<body>
+
+<audio id="correctAudio" src="truth.mp3"></audio>
+<audio id="incorrectAudio" src="false.mp3"></audio>
+
+<div id="display">
+    <p class="do">제시된 명령어에 맞게 주먹, 가위, 보를 골라서 내세요!</p>
+    <div class="rsp">
+        <p id="word"></p>
+        <img id="image" alt="Random Image">
+    </div>
+    <p id="result"></p>
+
+</div>
+
+<div id="choices">
+    <img src="rock.png" alt="Rock" class="choice" onclick="makeChoice('ro')">
+    <img src="scissors.png" alt="Scissors" class="choice" onclick="makeChoice('sc')">
+    <img src="paper.png" alt="Paper" class="choice" onclick="makeChoice('pa')">
+</div>
+
+<script>
+    var currentRound = 1;
+    var maxRounds = 5;
+
+
+    document.addEventListener("DOMContentLoaded", function () {startNewRound();});
+
+    function startNewRound() {
+        var words = ["비겨라!", "이겨라!", "져라!"];
+        var images = ["paper.png", "scissor.png", "rock.png"];
+
+        var selectedWord = words[Math.floor(Math.random() * words.length)];
+        document.getElementById("word").textContent = selectedWord;
+
+        var selectedImage = images[Math.floor(Math.random() * images.length)];
+        document.getElementById("image").src = selectedImage;
+
+        document.getElementById("result").style.display = "none";
+
+    }
+
+    function makeChoice(userChoice) {
+        var selectedWord = document.getElementById("word").textContent;
+        var randomImage = document.getElementById("image").src.split('/').pop();
+        var result = calculateResult(selectedWord, randomImage, userChoice);
+
+        if (result === "oo.png") {
+            document.getElementById("correctAudio").play();
+        } else {
+            document.getElementById("incorrectAudio").play();
+        }
+
+        document.getElementById("image").src = result === "oo.png" ? "oo.png" : "xx.png";
+
+        setTimeout(function(){
+            document.getElementById("result").style.display = "none";
+            if (currentRound < maxRounds) {
+                currentRound++;
+                startNewRound();
+            } else {
+                alert("게임을 완료하셨습니다!")
+            }
+        }, 1500);
+    }
+
+    function calculateResult(command, randomImage, userChoice) {
+        if (command.includes("이겨라!") && randomImage === "scissor.png" && userChoice === "ro") {
+            return "oo.png";
+        } else if (command.includes("이겨라!") && randomImage === "paper.png" && userChoice === "sc") {
+            return "oo.png";
+        } else if (command.includes("이겨라!") && randomImage === "rock.png" && userChoice === "pa") {
+            return "oo.png";
+        } else if (command.includes("비겨라!") && randomImage === "scissor.png" && userChoice === "sc") {
+            return "oo.png";
+        } else if (command.includes("비겨라!") && randomImage === "paper.png" && userChoice === "pa") {
+            return "oo.png";
+        } else if (command.includes("비겨라!") && randomImage === "rock.png" && userChoice === "ro") {
+            return "oo.png";
+        } else if (command.includes("져라!") && randomImage === "scissor.png" && userChoice === "pa") {
+            return "oo.png";
+        } else if (command.includes("져라!") && randomImage === "paper.png" && userChoice === "ro") {
+            return "oo.png";
+        } else if (command.includes("져라!") && randomImage === "rock.png" && userChoice === "sc") {
+            return "oo.png";
+        } else {
+            return "xx.png";
+        }
+    }
+</script>
+
+</body>
+</html>
